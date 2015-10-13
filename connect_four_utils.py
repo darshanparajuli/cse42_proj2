@@ -5,7 +5,7 @@ BOARD = 0
 TURN = 1
 
 def print_board(game_board: [str]) -> None:
-    for i in range(1, 8):
+    for i in range(1, connectfour.BOARD_COLUMNS+1):
         print("{} ".format(str(i)), end='')
     print()
 
@@ -20,4 +20,19 @@ def print_board(game_board: [str]) -> None:
                 print('Y', end=' ')
             
         print()
-    
+
+def get_input(cur_player:str) -> int:
+    ''' Gets the user input as an integer only '''
+    while True:
+        try:
+            print("Enter a column {} player: ".format(cur_player),end='')
+            value_input = int(input())      
+            if _validate_input(value_input):
+                return value_input-1 
+            else:
+                print("Column must be between 1 and {}".format(connectfour.BOARD_COLUMNS))
+        except ValueError:
+            print("Invalid column")
+
+def _validate_input(test:int)-> bool:
+    return test > 0 and test <= connectfour.BOARD_COLUMNS

@@ -8,8 +8,11 @@ def main() -> None:
 
 def test() -> None:
     game_state = connectfour.new_game()
-    game_state = connectfour.drop(game_state, 4)
-    game_state = connectfour.drop(game_state, 2)
+    player_move = utils.get_input("RED")
+    game_state = connectfour.drop(game_state, player_move)
+    utils.print_board(game_state[utils.BOARD])
+    player_move = utils.get_input("YELLOW")
+    game_state = connectfour.drop(game_state, player_move)
     utils.print_board(game_state[utils.BOARD])
 
 
