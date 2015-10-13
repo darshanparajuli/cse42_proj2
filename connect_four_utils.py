@@ -25,18 +25,33 @@ def print_board(game_board: [str]) -> None:
                 print(printable_piece.ljust(max_digit_len), end=' ')
         print()
 
-def get_input(cur_player:str) -> int:
+def get_input(cur_player:str) -> {}:
     ''' Gets the user input as an integer only '''
+    result = {}
     while True:
         try:
             print("Enter a column {} player: ".format(cur_player),end='')
-            value_input = int(input())      
-            if _validate_input(value_input):
-                return value_input-1 
+            value_input = input().strip()      
+
+            if _validate_char(value_input):
+                result["col"] = int(value_input[1:])-1
+                if _validate_col(result["col"]):
+                    result["pop"] = True
+                    return result
+                else:
+                    print("Column must be between 1 and {}".format(connectfour.BOARD_COLUMNS))
             else:
-                print("Column must be between 1 and {}".format(connectfour.BOARD_COLUMNS))
+                result["col"] = int(value_input)-1
+                if _validate_col(result["col"]):
+                   result["pop"] = False
+                   return result
+                else:
+                   print("Column must be between 1 and {}".format(connectfour.BOARD_COLUMNS))
         except ValueError:
             print("Invalid column")
 
-def _validate_input(test:int)-> bool:
-    return test > 0 and test <= connectfour.BOARD_COLUMNS
+def _validate_char(to_pop:str) -> bool:
+    return to_pop[0] == 'p'
+
+def _validate_col(test:int)-> bool:
+    return test >= 0 and test < connectfour.BOARD_COLUMNS

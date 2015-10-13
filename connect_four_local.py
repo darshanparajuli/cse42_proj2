@@ -15,7 +15,10 @@ def test() -> None:
     i = 0
     while True:
         player_move = utils.get_input(players[i])
-        game_state = connectfour.drop(game_state, player_move)
+        if player_move["pop"]:
+            game_state = connectfour.pop(game_state,player_move["col"])
+        else:
+            game_state = connectfour.drop(game_state, player_move["col"])
         utils.print_board(game_state[utils.BOARD])
         i = (i + 1) % 2
 
