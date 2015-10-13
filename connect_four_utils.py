@@ -5,20 +5,24 @@ BOARD = 0
 TURN = 1
 
 def print_board(game_board: [str]) -> None:
+    max_digit_len = len(str(connectfour.BOARD_COLUMNS))
+
     for i in range(1, connectfour.BOARD_COLUMNS+1):
-        print("{} ".format(str(i)), end='')
+        print("{}".format(str(i)).ljust(max_digit_len), end=' ')
     print()
 
     for i in range(connectfour.BOARD_ROWS):
         for j in range(connectfour.BOARD_COLUMNS):
             piece = game_board[j][i]
+            printable_piece = None
             if piece == connectfour.NONE:
-                print('.', end=' ')
+                printable_piece = '.'
             elif piece == connectfour.RED:
-                print('R', end=' ')
+                printable_piece = 'R'
             elif piece == connectfour.YELLOW:
-                print('Y', end=' ')
-            
+                printable_piece = 'Y'
+            if printable_piece != None:
+                print(printable_piece.ljust(max_digit_len), end=' ')
         print()
 
 def get_input(cur_player:str) -> int:
