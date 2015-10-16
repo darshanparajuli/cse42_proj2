@@ -1,57 +1,84 @@
+# -*- coding: utf-8 -*-
+
 import connectfour
+from collections import namedtuple
 
-'''GameState tuple constants'''
-BOARD = 0
-TURN = 1
 
+'''Actions'''
+ACTION_DROP = 'drop'
+ACTION_POP = 'pop'
+
+_BORDER_CHAR = u'\u25A0'
+    
+def print_instructions() -> None:
+    print("To drop: drop col#")
+    print("To pop:  pop col#")
+
+    
 def print_board(game_board: [str]) -> None:
     max_digit_len = len(str(connectfour.BOARD_COLUMNS))
 
-    for i in range(1, connectfour.BOARD_COLUMNS+1):
-        print("{}".format(str(i)).ljust(max_digit_len), end=' ')
+    print()
+    for i in range(0, connectfour.BOARD_COLUMNS + 2):
+        print("{}".format(_BORDER_CHAR).ljust(max_digit_len), end=' ')
+    print()
+    
+    for i in range(0, connectfour.BOARD_COLUMNS + 2):
+        temp = None
+        if i == 0 or i == connectfour.BOARD_COLUMNS + 1:
+            temp = _BORDER_CHAR
+        else:
+            temp = str(i)            
+        print("{}".format(temp).ljust(max_digit_len), end=' ')
     print()
 
     for i in range(connectfour.BOARD_ROWS):
-        for j in range(connectfour.BOARD_COLUMNS):
-            piece = game_board[j][i]
-            printable_piece = None
-            if piece == connectfour.NONE:
-                printable_piece = '.'
-            elif piece == connectfour.RED:
-                printable_piece = 'R'
-            elif piece == connectfour.YELLOW:
-                printable_piece = 'Y'
-            if printable_piece != None:
-                print(printable_piece.ljust(max_digit_len), end=' ')
+        print("{}".format(_BORDER_CHAR).ljust(max_digit_len), end=' ')
+        for j in range(connectfour.BOARD_COLUMNS + 1):
+            if j == connectfour.BOARD_COLUMNS:
+                print("{}".format(_BORDER_CHAR).ljust(max_digit_len), end=' ')
+            else:
+                piece = game_board[j][i]
+                printable_piece = None
+                if piece == connectfour.NONE:
+                    printable_piece = u'\u25CB'
+                elif piece == connectfour.RED:
+                    printable_piece = 'R'
+                elif piece == connectfour.YELLOW:
+                    printable_piece = 'Y'
+                if printable_piece != None:
+                    print(printable_piece.ljust(max_digit_len), end=' ')
         print()
 
+    for i in range(0, connectfour.BOARD_COLUMNS + 2):
+        print("{}".format(_BORDER_CHAR).ljust(max_digit_len), end=' ')
+
+    print()
+    print()
+    
+    
 def get_input(cur_player:str) -> {}:
     ''' Gets the user input as an integer only '''
-    result = {}
     while True:
-        try:
-            print("Enter a column {} player: ".format(cur_player),end='')
-            value_input = input().strip()      
+        print("Player {}'s turn:".format(cur_player),end=' ')
+        value_input = input().split()
 
-            if _validate_char(value_input):
-                result["col"] = int(value_input[1:])-1
-                if _validate_col(result["col"]):
-                    result["pop"] = True
-                    return result
-                else:
-                    print("Column must be between 1 and {}".format(connectfour.BOARD_COLUMNS))
-            else:
-                result["col"] = int(value_input)-1
-                if _validate_col(result["col"]):
-                   result["pop"] = False
-                   return result
-                else:
-                   print("Column must be between 1 and {}".format(connectfour.BOARD_COLUMNS))
-        except ValueError:
-            print("Invalid column")
+        result = _validate_user_input(value_input)
+        if result != None:
+            return result
+        
+        print('invalid input')
 
-def _validate_char(to_pop:str) -> bool:
-    return to_pop[0] == 'p'
-
-def _validate_col(test:int)-> bool:
-    return test >= 0 and test < connectfour.BOARD_COLUMNS
+def _validate_user_input(user_input: [str]) -> bool:
+    if len(user_input) == 2:
+        action = user_input[0]
+        column = user_input[1]
+    
+        if (action == ACTION_DROP or action == ACTION_POP) and column.isdigit():
+            column = int(column)
+            if column >= 1 and column <= connectfour.BOARD_COLUMNS:
+                result = namedtuple('Result', ['action', 'col'])
+                result.action = action
+                result.col = column - 1
+                return result
+    return None

@@ -1,48 +1,46 @@
-import connectfour
+import connectfour as connectfour_base
 import connect_four_utils as utils
 
 
-def main() -> None:
+def test() -> None:
     pass
 
 
-def print_instructions() -> None:
-    print("Type in column number to drop your piece")
-    print("For example, to drop a piece at sixth column, type '6'")
-    print("Type in column number prefixed by letter p to pop the bottom piece")
-    print("For example, 'p6' will pop the bottom piece at sixth column")
-    print()
-
-def test() -> None:
-    print_instructions()
+def run_game() -> None:
+    utils.print_instructions()
     
-    game_state = connectfour.new_game()
-    utils.print_board(game_state[utils.BOARD])
-
-    winner = connectfour.NONE
+    game_state = connectfour_base.new_game()
+    
+    winner = connectfour_base.NONE
     players = ("RED", "YELLOW")
     i = 0
     
     while True:
+        utils.print_board(game_state.board)
         player_move = utils.get_input(players[i])
         try:
-            if player_move["pop"]:
-                game_state = connectfour.pop(game_state,player_move["col"])
+            if player_move.action == utils.ACTION_POP:
+                game_state = connectfour_base.pop(game_state, player_move.col)
             else:
-                game_state = connectfour.drop(game_state, player_move["col"])
-        except connectfour.InvalidMoveError:
-            print("invalid move")
+                game_state = connectfour_base.drop(game_state, player_move.col)
+        except connectfour_base.InvalidMoveError:
             continue
 
-        utils.print_board(game_state[utils.BOARD])
         i = (i + 1) % 2
 
-        winner = connectfour.winner(game_state)
-        if winner != connectfour.NONE:
+        winner = connectfour_base.winner(game_state)
+        if winner != connectfour_base.NONE:
             break
 
-    print('winner: {}'.format(winner))
+    winner_name = 'NONE'
+    if winner == connectfour_base.RED:
+        winner_name = 'RED'
+    elif winner == connectfour_base.YELLOW:
+        winner_name = 'YELLOW'
 
+    print('winner: {}'.format(winner_name))
+
+    
 if __name__ == "__main__":
-    test()
-    #main()
+    #test()
+    run_game()
