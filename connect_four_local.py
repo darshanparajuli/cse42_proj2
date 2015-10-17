@@ -1,17 +1,12 @@
-import connectfour as connectfour_base
+import connectfour as game
 import connect_four_utils as utils
-
-
-def test() -> None:
-    pass
 
 
 def run_game() -> None:
     utils.print_instructions()
+    game_state = game.new_game()
     
-    game_state = connectfour_base.new_game()
-    
-    winner = connectfour_base.NONE
+    winner = game.NONE
     players = ("RED", "YELLOW")
     i = 0
     
@@ -20,22 +15,22 @@ def run_game() -> None:
         player_move = utils.get_input(players[i])
         try:
             if player_move.action == utils.ACTION_POP:
-                game_state = connectfour_base.pop(game_state, player_move.col)
+                game_state = game.pop(game_state, player_move.col)
             else:
-                game_state = connectfour_base.drop(game_state, player_move.col)
-        except connectfour_base.InvalidMoveError:
+                game_state = game.drop(game_state, player_move.col)
+        except game.InvalidMoveError:
             continue
 
         i = (i + 1) % 2
 
-        winner = connectfour_base.winner(game_state)
-        if winner != connectfour_base.NONE:
+        winner = game.winner(game_state)
+        if winner != game.NONE:
             break
 
     winner_name = 'NONE'
-    if winner == connectfour_base.RED:
+    if winner == game.RED:
         winner_name = 'RED'
-    elif winner == connectfour_base.YELLOW:
+    elif winner == game.YELLOW:
         winner_name = 'YELLOW'
 
     print('winner: {}'.format(winner_name))
