@@ -76,7 +76,7 @@ def sync_move(server:_Connection,action:str,col:int) -> ():
             result = namedtuple('Result', ['action', 'col'])
             response = _read_from_server(server).split()
             result.action = response[0]
-            result.col = int(response[1])
+            result.col = int(response[1]) - 1
             return result
         else:
             raise InvalidServerResponse

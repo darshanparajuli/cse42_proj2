@@ -22,23 +22,19 @@ def main() -> None:
         if i == 0:
             player_move = utils.get_input(players[i])
         else:
-            player_move = get_move(connection)
+            player_move = sync_move(connection,player_move.action,player_move.col)
         try:
             if player_move.action == utils.ACTION_POP:
                 game_state = game.pop(game_state, player_move.col)
             else:
                 game_state = game.drop(game_state, player_move.col)
+
             send_move(connection,player_move.action,player_move.col)
 
         except:
             continue
 
         i = (i+1) % 2
-
-
-
-
-
 
 if __name__ == "__main__":
     main()

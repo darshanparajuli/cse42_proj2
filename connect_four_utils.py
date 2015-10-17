@@ -57,7 +57,7 @@ def print_board(game_board: [str]) -> None:
     print()
     
     
-def get_input(cur_player:str) -> {}:
+def get_input(cur_player:str) -> ():
     ''' Gets the user input as an integer only '''
     while True:
         print("Player {}'s turn:".format(cur_player),end=' ')
