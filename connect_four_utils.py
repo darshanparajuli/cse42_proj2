@@ -5,8 +5,8 @@ from collections import namedtuple
 
 
 '''Actions'''
-ACTION_DROP = 'drop'
-ACTION_POP = 'pop'
+ACTION_DROP = 'DROP'
+ACTION_POP = 'POP'
 
 _BORDER_CHAR = u'\u25A0'
     
@@ -71,7 +71,7 @@ def get_input(cur_player:str) -> {}:
 
 def _validate_user_input(user_input: [str]) -> bool:
     if len(user_input) == 2:
-        action = user_input[0]
+        action = user_input[0].upper()
         column = user_input[1]
     
         if (action == ACTION_DROP or action == ACTION_POP) and column.isdigit():

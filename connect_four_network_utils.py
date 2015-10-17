@@ -50,7 +50,6 @@ def start_game(server:"connection",username:str) -> bool:
             raise InvalidServerException
         if _read_from_server(server) != "READY":
             raise InvalidServerException
-        print("Game started")
         return True
 
     except InvalidServerException:   
@@ -66,6 +65,24 @@ def get_username() -> str:
             print("Invalid username")
         else:
             return username[0]
+
+def sync_move(server:_Connection,action:str,col:int) -> ():
+    try:
+        if _read_from_server(server) != "READY":
+            raise InvalidServerResponse
+
+        _write_to_server(server,action + str(col))
+        if _read_from_server(server) == "OKAY":
+            result = namedtuple('Result', ['action', 'col'])
+            response = _read_from_server(server).split()
+            result.action = response[0]
+            result.col = int(response[1])
+            return result
+        else:
+            raise InvalidServerResponse
+    except InvalidServerResponse:
+        print("Invalid Server response")
+
 
 def _close_connection(server:"connection") -> None:
     server.socket_input.close()
