@@ -18,7 +18,7 @@ def main() -> None:
 
     while is_connected:
         #Play our game
-        utils.print_board(game_state)
+        utils.print_board(game_state.board)
         if i == 0:
             player_move = utils.get_input(players[i])
         else:
