@@ -71,7 +71,7 @@ def sync_move(server:_Connection,action:str,col:int) -> ():
         if _read_from_server(server) != "READY":
             raise InvalidServerResponse
 
-        _write_to_server(server,action + str(col))
+        _write_to_server(server,"{} {}".format(action, str(col)))
         if _read_from_server(server) == "OKAY":
             result = namedtuple('Result', ['action', 'col'])
             response = _read_from_server(server).split()
