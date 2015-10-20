@@ -2,6 +2,9 @@ import socket
 import connect_four_utils as utils
 from collections import namedtuple
 
+# TODO: remove this
+import time
+
 _Connection =  namedtuple('socket_connection',['socket','socket_input','socket_output'])
 
 class InvalidServerResponse(Exception):
@@ -40,7 +43,8 @@ def get_username() -> str:
             print("Invalid username")
         else:
             return username[0]
-
+        
+        
 def sync_move(connection: 'connection', action: str, col: int) -> ():
     try:
         _write_to_server(connection,"{} {}".format(action, str(col + 1)))
@@ -49,18 +53,27 @@ def sync_move(connection: 'connection', action: str, col: int) -> ():
         winner = None
 
         response = _read_from_server(connection)
+        print('response: {}'.format(response))
         if response == "OKAY":
             response = _read_from_server(connection).split()
+            print('response: {}'.format(response))
             result = utils.validate_user_input(response)
         elif response == "INVALID":
             raise InvalidServerResponse
-
+        elif response.startswith("WINNER"):
+            result = namedtuple('Result', ['action', 'col', 'winner'])
+            result.winner = response.split("_")[1]
+            time.sleep(5)
+            return result
+        
         response = _read_from_server(connection)
+        print('response: {}'.format(response))
         if response.startswith("WINNER"):
             result.winner = response.split("_")[1]
         elif response != "READY":
             raise InvalidServerResponse
 
+        print('result: {}'.format(result))
         return result
     except InvalidServerResponse:
         print("Invalid Server response")
@@ -83,8 +96,8 @@ def _get_connection_info() -> (str,int):
     except ValueError:
         print("Enter a valid input")
         return None, None
-
-
+    
+    
 def _open_connection(host: str, port: int) -> "connection":
     connection = socket.socket()
     try:

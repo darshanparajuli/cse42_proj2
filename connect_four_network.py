@@ -2,6 +2,22 @@ import connect_four_network_utils as net_utils
 import connectfour as game
 import connect_four_utils as utils
 
+# TODO: remove these
+import random
+import time
+import calendar
+from collections import namedtuple
+
+def get_random_move() -> '(action, col, winner)':
+    result = namedtuple('Result', ['action', 'col', 'winner'])
+    result.col = random.randint(0, game.BOARD_COLUMNS - 1)
+    if random.randint(0, 1) == 0:
+        result.action = utils.ACTION_DROP
+    else:
+        result.action = utils.ACTION_POP
+    result.winner = None
+    return result
+    
 
 def main() -> None:
     # while True:                 
@@ -17,6 +33,7 @@ def main() -> None:
     connection = net_utils._open_connection("woodhouse.ics.uci.edu", 4444)
     user = "batman"
     net_utils.start_game(connection, user)
+    random.seed(calendar.timegm(time.gmtime()))
     
     utils.print_instructions()
     game_state = game.new_game()
@@ -30,21 +47,23 @@ def main() -> None:
     while True:
         utils.print_board(game_state.board)
         if i == 0:
-            player_move = utils.get_input(players[i], input_format)
+            player_move = get_random_move() #utils.get_input(players[i], input_format)
+            print('[{}] {}: {} {}'.format(players[i], user, player_move.action.title(), (player_move.col + 1)))
         else:
             player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
 
             if player_move == None:
                 break
             else:
-                print('[{}] Server AI: {} {}'.format(players[i], player_move.action.title(), (player_move.col + 1)))
+                if player_move.winner == None:
+                    print('[{}] Server AI: {} {}'.format(players[i], player_move.action.title(), (player_move.col + 1)))
         try:
-            if player_move.action == utils.ACTION_POP:
-                game_state = game.pop(game_state, player_move.col)
+            if player_move.winner == None:
+                if player_move.action == utils.ACTION_POP:
+                    game_state = game.pop(game_state, player_move.col)
+                else:
+                    game_state = game.drop(game_state, player_move.col)
             else:
-                game_state = game.drop(game_state, player_move.col)
-
-            if player_move.winner != None:
                 utils.print_board(game_state.board)
                 print("Winner is: {}".format(player_move.winner))
                 break
@@ -57,5 +76,6 @@ def main() -> None:
     net_utils.end_game(connection)
 
 if __name__ == "__main__":
-    main()
+    while True:
+        main()
     
