@@ -35,15 +35,16 @@ def main() -> None:
             player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
             if player_move == None:
                 break
-            elif player_move.winner != None:
-                utils.print_board(game_state.board)
-                print("Winner is: {}".format(player_move.winner))
-                break
         try:
             if player_move.action == utils.ACTION_POP:
                 game_state = game.pop(game_state, player_move.col)
             else:
                 game_state = game.drop(game_state, player_move.col)
+
+            if player_move.winner != None:
+                utils.print_board(game_state.board)
+                print("Winner is: {}".format(player_move.winner))
+                break
         except game.InvalidMoveError:
             continue
 
