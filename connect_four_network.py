@@ -40,6 +40,7 @@ def main() -> None:
 
     winner = game.NONE
     players = ("RED", "YELLOW")
+    player_names = {"RED": user, "YELLOW": "Server AI"}
     i = 0
 
     player_move = None
@@ -58,14 +59,14 @@ def main() -> None:
                 if player_move.winner == None:
                     print('[{}] Server AI: {} {}'.format(players[i], player_move.action.title(), (player_move.col + 1)))
         try:
-            if player_move.winner == None:
-                if player_move.action == utils.ACTION_POP:
-                    game_state = game.pop(game_state, player_move.col)
-                else:
-                    game_state = game.drop(game_state, player_move.col)
-            else:
+            if player_move.action == utils.ACTION_POP:
+                game_state = game.pop(game_state, player_move.col)
+            elif player_move.action == utils.ACTION_DROP:
+                game_state = game.drop(game_state, player_move.col)
+
+            if player_move.winner != None:
                 utils.print_board(game_state.board)
-                print("Winner is: {}".format(player_move.winner))
+                print("[{}] {} WINS!!!".format(player_move.winner, player_names[player_move.winner]))
                 break
         except game.InvalidMoveError:
             print("Invalid move")
@@ -74,7 +75,8 @@ def main() -> None:
         i = (i + 1) % 2
 
     net_utils.end_game(connection)
-
+    time.sleep(1)
+    
 if __name__ == "__main__":
     while True:
         main()

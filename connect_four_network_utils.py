@@ -2,10 +2,9 @@ import socket
 import connect_four_utils as utils
 from collections import namedtuple
 
-# TODO: remove this
-import time
 
 _Connection =  namedtuple('socket_connection',['socket','socket_input','socket_output'])
+
 
 class InvalidServerResponse(Exception):
     pass
@@ -63,7 +62,6 @@ def sync_move(connection: 'connection', action: str, col: int) -> ():
         elif response.startswith("WINNER"):
             result = namedtuple('Result', ['action', 'col', 'winner'])
             result.winner = response.split("_")[1]
-            time.sleep(5)
             return result
         
         response = _read_from_server(connection)
