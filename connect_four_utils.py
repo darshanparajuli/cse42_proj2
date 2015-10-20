@@ -67,7 +67,7 @@ def get_input(cur_player:str) -> ():
         if result != None:
             return result
         
-        print('invalid input')
+        print('Invalid move')
 
 def validate_user_input(user_input: [str]) -> bool:
     if len(user_input) == 2:
