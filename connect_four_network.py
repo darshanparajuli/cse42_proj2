@@ -46,6 +46,7 @@ def main() -> None:
                 print("Winner is: {}".format(player_move.winner))
                 break
         except game.InvalidMoveError:
+            print("Invalid move")
             continue
 
         i = (i + 1) % 2

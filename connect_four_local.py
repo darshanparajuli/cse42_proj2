@@ -19,6 +19,7 @@ def run_game() -> None:
             else:
                 game_state = game.drop(game_state, player_move.col)
         except game.InvalidMoveError:
+            print("Invalid move")
             continue
 
         i = (i + 1) % 2
