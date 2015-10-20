@@ -20,7 +20,7 @@ def start_game(connection:"connection", username:str) -> bool:
 
         if _read_from_server(connection) == "WELCOME {}".format(username):
             _write_to_server(connection,"AI_GAME")
-        else:
+        if _read_from_server(connection) != "READY":
             raise InvalidServerResponse
         return True
     except InvalidServerResponse:   
@@ -43,21 +43,27 @@ def get_username() -> str:
 
 def sync_move(connection: 'connection', action: str, col: int) -> ():
     try:
-        response = _read_from_server(connection)
-        print('response: {}'.format(response))
-        if response != "READY":
-            raise InvalidServerResponse
-
         _write_to_server(connection,"{} {}".format(action, str(col + 1)))
         
+        result = None
+        winner = None
         response = _read_from_server(connection)
         print('response: {}'.format(response))
         if response == "OKAY":
             response = _read_from_server(connection).split()
             print('response: {}'.format(response))
-            return utils.validate_user_input(response)
+            result = utils.validate_user_input(response)
         elif response == "INVALID":
             raise InvalidServerResponse
+
+        response = _read_from_server(connection)
+        print('response: {}'.format(response))
+        if response.startswith("WINNER"):
+            return response.split("_")[1]
+        elif response != "READY":
+            raise InvalidServerResponse
+
+        return result
     except InvalidServerResponse:
         print("Invalid Server response")
         return None
