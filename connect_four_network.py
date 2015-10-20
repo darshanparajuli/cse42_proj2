@@ -36,6 +36,7 @@ def main() -> None:
             if player_move == None:
                 break
             elif player_move.winner != None:
+                utils.print_board(game_state.board)
                 print("Winner is: {}".format(player_move.winner))
                 break
         try:
