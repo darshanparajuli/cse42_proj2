@@ -77,8 +77,9 @@ def validate_user_input(user_input: [str]) -> bool:
         if (action == ACTION_DROP or action == ACTION_POP) and column.isdigit():
             column = int(column)
             if column >= 1 and column <= connectfour.BOARD_COLUMNS:
-                result = namedtuple('Result', ['action', 'col'])
+                result = namedtuple('Result', ['action', 'col', 'winner'])
                 result.action = action
                 result.col = column - 1
+                result.winner = None
                 return result
     return None

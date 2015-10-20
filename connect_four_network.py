@@ -35,8 +35,9 @@ def main() -> None:
             player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
             if player_move == None:
                 break
-            elif player_move is str:
-                print("Winner is: {}".format(player_move))
+            elif player_move.winner != None:
+                print("Winner is: {}".format(player_move.winner))
+                break
         try:
             if player_move.action == utils.ACTION_POP:
                 game_state = game.pop(game_state, player_move.col)

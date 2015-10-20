@@ -59,7 +59,7 @@ def sync_move(connection: 'connection', action: str, col: int) -> ():
         response = _read_from_server(connection)
         print('response: {}'.format(response))
         if response.startswith("WINNER"):
-            return response.split("_")[1]
+            result.winner = response.split("_")[1]
         elif response != "READY":
             raise InvalidServerResponse
 
