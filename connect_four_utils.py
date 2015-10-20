@@ -63,13 +63,13 @@ def get_input(cur_player:str) -> ():
         print("Player {}'s turn:".format(cur_player),end=' ')
         value_input = input().split()
 
-        result = _validate_user_input(value_input)
+        result = validate_user_input(value_input)
         if result != None:
             return result
         
         print('invalid input')
 
-def _validate_user_input(user_input: [str]) -> bool:
+def validate_user_input(user_input: [str]) -> bool:
     if len(user_input) == 2:
         action = user_input[0].upper()
         column = user_input[1]

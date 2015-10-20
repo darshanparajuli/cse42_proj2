@@ -34,8 +34,8 @@ YELLOW = 2
 # anywhere in your own code, because this is something we'll be
 # attempting when we test your program.
 
-BOARD_COLUMNS = 10
-BOARD_ROWS = 9
+BOARD_COLUMNS = 7
+BOARD_ROWS = 6
 
 
 # GameState is a namedtuple that tracks everything important about

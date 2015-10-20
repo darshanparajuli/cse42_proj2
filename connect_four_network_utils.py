@@ -2,12 +2,65 @@ import socket
 import connect_four_utils as utils
 from collections import namedtuple
 
-_EOL = "\r\n"
-
 _Connection =  namedtuple('socket_connection',['socket','socket_input','socket_output'])
 
 class InvalidServerResponse(Exception):
     pass
+
+def connect_to_server() -> "connection":
+    host, port = _get_connection_info()
+    if host and port:
+        return  _open_connection(host,port)
+    else:
+        return None
+    
+def start_game(connection:"connection", username:str) -> bool:
+    try:
+        _write_to_server(connection,"I32CFSP_HELLO {}".format(username)) 
+
+        if _read_from_server(connection) == "WELCOME {}".format(username):
+            _write_to_server(connection,"AI_GAME")
+        else:
+            raise InvalidServerResponse
+        return True
+    except InvalidServerResponse:   
+        print("Closing connection: Invalid server response")
+        _close_connection(connection)
+        return False
+
+def end_game(connection: 'connection') -> None:
+    _close_connection(connection)
+    print('Connection closed!')
+    
+def get_username() -> str:
+    while True:
+        print("Enter a username (no spaces):", end = ' ')
+        username = input().split()
+        if len(username) != 1:
+            print("Invalid username")
+        else:
+            return username[0]
+
+def sync_move(connection: 'connection', action: str, col: int) -> ():
+    try:
+        response = _read_from_server(connection)
+        print('response: {}'.format(response))
+        if response != "READY":
+            raise InvalidServerResponse
+
+        _write_to_server(connection,"{} {}".format(action, str(col + 1)))
+        
+        response = _read_from_server(connection)
+        print('response: {}'.format(response))
+        if response == "OKAY":
+            response = _read_from_server(connection).split()
+            print('response: {}'.format(response))
+            return utils.validate_user_input(response)
+        elif response == "INVALID":
+            raise InvalidServerResponse
+    except InvalidServerResponse:
+        print("Invalid Server response")
+        return None
 
 def _get_connection_info() -> (str,int):
     host = ''
@@ -22,78 +75,32 @@ def _get_connection_info() -> (str,int):
         if port < 0 or port > 65535:
             raise ValueError
         else:
-            return host,port
+            return host, port
     except ValueError:
         print("Enter a valid input")
+        return None, None
 
 
 def _open_connection(host: str, port: int) -> "connection":
-    server = socket.socket()
+    connection = socket.socket()
     try:
-        server.connect((host,port))
-        con = _Connection(server,server.makefile('r'),server.makefile('w'))
+        connection.connect((host, port))
+        con = _Connection(connection, connection.makefile('r'), connection.makefile('w'))
         return con
     except Exception:
         print("Could not connect to host: {}:{}".format(host,port))
 
-def connect_to_server() -> "connection":
-    host,port = _get_connection_info()
-    return  _open_connection(host,port)
+        
+def _close_connection(connection:"connection") -> None:
+    connection.socket_input.close()
+    connection.socket_output.close()
+    connection.socket.close()
 
-def start_game(server:"connection",username:str) -> bool:
-    try:
-        _write_to_server(server,"I32CFSP_HELLO {}".format(username)) 
-
-        if _read_from_server(server) == "WELCOME {}".format(username):
-            _write_to_server(server,"AI_GAME")
-        else:
-            raise InvalidServerException
-        if _read_from_server(server) != "READY":
-            raise InvalidServerException
-        return True
-
-    except InvalidServerException:   
-        print("Closing connection: Invalid server response")
-        _close_connection(server)
-        return False
-
-def get_username() -> str:
-    while True:
-        print("Enter a username: (no spaces)")
-        username = input().split()
-        if len(username) != 1:
-            print("Invalid username")
-        else:
-            return username[0]
-
-def sync_move(server:_Connection,action:str,col:int) -> ():
-    try:
-        if _read_from_server(server) != "READY":
-            raise InvalidServerResponse
-
-        _write_to_server(server,"{} {}".format(action, str(col)))
-        if _read_from_server(server) == "OKAY":
-            result = namedtuple('Result', ['action', 'col'])
-            response = _read_from_server(server).split()
-            result.action = response[0]
-            result.col = int(response[1]) - 1
-            return result
-        else:
-            raise InvalidServerResponse
-    except InvalidServerResponse:
-        print("Invalid Server response")
-
-
-def _close_connection(server:"connection") -> None:
-    server.socket_input.close()
-    server.socket_output.close()
-    server.socket.close()
-
-def _read_from_server(server: _Connection) -> str:
-    return server.socket_input.readline()[:-1]
-
-def _write_to_server(server: _Connection,message:str) -> None:
-    server.socket_output.write(message + _EOL)
-    server.socket_output.flush()
     
+def _read_from_server(connection: _Connection) -> str:
+    return connection.socket_input.readline()[:-1]
 
+
+def _write_to_server(connection: _Connection,message:str) -> None:
+    connection.socket_output.write('{}\r\n'.format(message))
+    connection.socket_output.flush()
