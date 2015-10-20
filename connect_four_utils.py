@@ -11,9 +11,11 @@ ACTION_POP = 'POP'
 _BORDER_CHAR = u'\u25A0'
     
 def print_instructions() -> None:
-    print("To drop: drop col#")
-    print("To pop:  pop col#")
-
+    print("Welcome to the best Connect Four game ever made!!!")
+    print("Instructions:")
+    print("  1. You can either drop your piece or pop your piece.")
+    print("  2. To drop, enter 'drop column#', i.e. 'drop 4'.")
+    print("  3. Top pop, enter 'pop column#', i.e. 'pop 3'.")
     
 def print_board(game_board: [str]) -> None:
     max_digit_len = len(str(connectfour.BOARD_COLUMNS))
@@ -41,7 +43,7 @@ def print_board(game_board: [str]) -> None:
                 piece = game_board[j][i]
                 printable_piece = None
                 if piece == connectfour.NONE:
-                    printable_piece = u'\u25CB'
+                    printable_piece = '.'
                 elif piece == connectfour.RED:
                     printable_piece = 'R'
                 elif piece == connectfour.YELLOW:
@@ -57,12 +59,11 @@ def print_board(game_board: [str]) -> None:
     print()
     
     
-def get_input(cur_player:str) -> ():
-    ''' Gets the user input as an integer only '''
+def get_input(cur_player: str, input_format = "Player {}'s turn:") -> ():
+    ''' Gets the user input '''
     while True:
-        print("Player {}'s turn:".format(cur_player),end=' ')
+        print(input_format.format(cur_player),end=' ')
         value_input = input().split()
-
         result = validate_user_input(value_input)
         if result != None:
             return result

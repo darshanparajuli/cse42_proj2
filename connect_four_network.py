@@ -18,23 +18,26 @@ def main() -> None:
     user = "batman"
     net_utils.start_game(connection, user)
     
-    print("Game Started")
     utils.print_instructions()
     game_state = game.new_game()
 
     winner = game.NONE
-    players = ("RED","SERVER")
+    players = ("RED", "YELLOW")
     i = 0
 
     player_move = None
+    input_format = "[{{}}] {}: ".format(user)
     while True:
         utils.print_board(game_state.board)
         if i == 0:
-            player_move = utils.get_input(players[i])
+            player_move = utils.get_input(players[i], input_format)
         else:
             player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
+
             if player_move == None:
                 break
+            else:
+                print('[{}] Server AI: {} {}'.format(players[i], player_move.action.title(), (player_move.col + 1)))
         try:
             if player_move.action == utils.ACTION_POP:
                 game_state = game.pop(game_state, player_move.col)
