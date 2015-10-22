@@ -41,39 +41,34 @@ def main() -> None:
     winner = game.NONE
     players = ("RED", "YELLOW")
     player_names = {"RED": user, "YELLOW": "Server AI"}
-    i = 0
+    is_server = False
 
     player_move = None
     input_format = "[{{}}] {}: ".format(user)
-    while True:
+    while winner == game.NONE:
         utils.print_board(game_state.board)
-        if i == 0:
+        if not is_server:
             player_move = get_random_move() #utils.get_input(players[i], input_format)
-            print('[{}] {}: {} {}'.format(players[i], user, player_move.action.title(), (player_move.col + 1)))
+            print('[{}] {}: {} {}'.format(players[is_server], user, player_move.action.title(), (player_move.col + 1)))
         else:
             player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
-
-            if player_move == None:
-                break
-            else:
-                if player_move.winner == None:
-                    print('[{}] Server AI: {} {}'.format(players[i], player_move.action.title(), (player_move.col + 1)))
+            print('[{}] Server AI: {} {}'.format(players[is_server], player_move.action.title(), (player_move.col + 1)))
         try:
             if player_move.action == utils.ACTION_POP:
                 game_state = game.pop(game_state, player_move.col)
             elif player_move.action == utils.ACTION_DROP:
                 game_state = game.drop(game_state, player_move.col)
 
-            if player_move.winner != None:
-                utils.print_board(game_state.board)
-                print("[{}] {} WINS!!!".format(player_move.winner, player_names[player_move.winner]))
-                break
+            winner = game.winner(game_state)
+
         except game.InvalidMoveError:
             print("Invalid move")
             continue
 
-        i = (i + 1) % 2
+        is_server = not is_server
 
+    utils.print_board(game_state.board)
+    print("[{}] {} WINS!!!".format(players[winner-1], player_names[players[winner-1]]))
     net_utils.end_game(connection)
     time.sleep(1)
     
