@@ -22,8 +22,6 @@ def start_game(connection:"connection", username:str) -> bool:
 
         if _read_from_server(connection) == "WELCOME {}".format(username):
             _write_to_server(connection,"AI_GAME")
-        if _read_from_server(connection) != "READY":
-            raise InvalidServerResponse
         return True
     except InvalidServerResponse:   
         print("Closing connection: Invalid server response")
@@ -45,34 +43,31 @@ def get_username() -> str:
         
         
 def sync_move(connection: 'connection', action: str, col: int) -> ():
+    ''' Communicates a move with the server '''
     try:
-        _write_to_server(connection,"{} {}".format(action, str(col + 1)))
-        
         result = None
         winner = None
+        while not result:
+            response = _read_from_server(connection)
 
-        response = _read_from_server(connection)
-        print('response: {}'.format(response))
-        if response == "OKAY":
-            response = _read_from_server(connection).split()
-            print('response: {}'.format(response))
-            result = utils.validate_user_input(response)
-        elif response == "INVALID":
-            raise InvalidServerResponse
-        elif response.startswith("WINNER"):
-            result = namedtuple('Result', ['action', 'col', 'winner'])
-            result.winner = response.split("_")[1]
-            return result
-        
-        response = _read_from_server(connection)
-        print('response: {}'.format(response))
-        if response.startswith("WINNER"):
-            result.winner = response.split("_")[1]
-        elif response != "READY":
-            raise InvalidServerResponse
+            if response == "OKAY":
+                response = _read_from_server(connection).split()
+                print('response: {}'.format(response))
+                result = utils.validate_user_input(response)
+            elif response == "READY":
+                _write_to_server(connection,"{} {}".format(action, str(col + 1)))
+            elif response == "INVALID":
+                #TODO: Make this unique
+                raise InvalidServerResponse
+            elif response.startswith("WINNER"):
+                result = namedtuple('Result', ['action', 'col', 'winner'])
+                result.winner = response.split("_")[1]
+                print(result.winner)
+            else:
+                raise InvalidServerResponse
 
-        print('result: {}'.format(result))
         return result
+        
     except InvalidServerResponse:
         print("Invalid Server response")
         return None
