@@ -35,30 +35,35 @@ def main() -> None:
     net_utils.start_game(connection, user)
     random.seed(calendar.timegm(time.gmtime()))
     
-    utils.print_instructions()
-    game_state = game.new_game()
 
+    # Variable Initialization
     winner = game.NONE
     players = ("RED", "YELLOW")
     player_names = {"RED": user, "YELLOW": "Server AI"}
     is_server = False
-
     player_move = None
+
     input_format = "[{{}}] {}: ".format(user)
+    utils.print_instructions()
+    game_state = game.new_game()
+
     while winner == game.NONE:
         utils.print_board(game_state.board)
+
+        # Receive player moves and execute server side
         if not is_server:
             player_move = get_random_move() #utils.get_input(players[i], input_format)
-            print('[{}] {}: {} {}'.format(players[is_server], user, player_move.action.title(), (player_move.col + 1)))
         else:
             player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
-            print('[{}] Server AI: {} {}'.format(players[is_server], player_move.action.title(), (player_move.col + 1)))
-        try:
-            if player_move.action == utils.ACTION_POP:
-                game_state = game.pop(game_state, player_move.col)
-            elif player_move.action == utils.ACTION_DROP:
-                game_state = game.drop(game_state, player_move.col)
 
+        print('[{}] {}: {} {}'.format(\
+            players[is_server],\
+            player_names[players[is_server]],\
+            player_move.action.title(),\
+            (player_move.col + 1)))
+        # Execute player moves locally
+        try:
+            game_state = execute_move(game_state,player_move)
             winner = game.winner(game_state)
 
         except game.InvalidMoveError:
@@ -67,10 +72,26 @@ def main() -> None:
 
         is_server = not is_server
 
+    # Sync final moves to server and validate
+    #  the winner remotely and locally
+    player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
     utils.print_board(game_state.board)
-    print("[{}] {} WINS!!!".format(players[winner-1], player_names[players[winner-1]]))
+    validate_winner(players[winner-1],player_move.winner,player_names)
+
     net_utils.end_game(connection)
     time.sleep(1)
+
+def execute_move(game_state,player_move) -> 'game_state':
+    if player_move.action == utils.ACTION_POP:
+        return game.pop(game_state, player_move.col)
+    elif player_move.action == utils.ACTION_DROP:
+        return game.drop(game_state, player_move.col)
+
+def validate_winner(local,server,names):
+    if local == server:
+        print("[{}] {} WINS!!!".format(server, names[server]))
+    else:
+        print("Winner mismatch, someone cheated!")
     
 if __name__ == "__main__":
     while True:
