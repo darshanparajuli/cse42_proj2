@@ -52,7 +52,6 @@ def sync_move(connection: 'connection', action: str, col: int) -> ():
 
             if response == "OKAY":
                 response = _read_from_server(connection).split()
-                print('response: {}'.format(response))
                 result = utils.validate_user_input(response)
             elif response == "READY":
                 _write_to_server(connection,"{} {}".format(action, str(col + 1)))
@@ -62,7 +61,6 @@ def sync_move(connection: 'connection', action: str, col: int) -> ():
             elif response.startswith("WINNER"):
                 result = namedtuple('Result', ['action', 'col', 'winner'])
                 result.winner = response.split("_")[1]
-                print(result.winner)
             else:
                 raise InvalidServerResponse
 

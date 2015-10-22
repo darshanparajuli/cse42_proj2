@@ -87,7 +87,7 @@ def execute_move(game_state,player_move) -> 'game_state':
     elif player_move.action == utils.ACTION_DROP:
         return game.drop(game_state, player_move.col)
 
-def validate_winner(local,server,names):
+def validate_winner(local,server,names) -> None:
     if local == server:
         print("[{}] {} WINS!!!".format(server, names[server]))
     else:
