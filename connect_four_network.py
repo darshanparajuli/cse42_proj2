@@ -11,7 +11,7 @@ from collections import namedtuple
 def get_random_move() -> '(action, col, winner)':
     result = namedtuple('Result', ['action', 'col', 'winner'])
     result.col = random.randint(0, game.BOARD_COLUMNS - 1)
-    if random.randint(0, 1) == 0:
+    if random.randint(0, 100) > 30:
         result.action = utils.ACTION_DROP
     else:
         result.action = utils.ACTION_POP
