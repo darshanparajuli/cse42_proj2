@@ -5,7 +5,7 @@ from collections import namedtuple
 import random 
 
 # Test code
-import time, calendar
+# import time, calendar
 
 def get_random_move() -> '(action, col, winner)':
     ''' A test AI to play moves agains a remote server '''
@@ -30,13 +30,12 @@ def main() -> None:
             else:
                 return
 
-    # Test connection
+    # Test code
     #connection = net_utils._open_connection("woodhouse.ics.uci.edu", 4444)
     #user = "batman"
     #net_utils.start_game(connection, user)
     #random.seed(calendar.timegm(time.gmtime()))
     
-
     # Variable Initialization
     winner = game.NONE
     players = ("RED", "YELLOW")
@@ -58,13 +57,12 @@ def main() -> None:
             player_move = utils.get_input(game_state,players[server_turn], input_format)
         else:
             player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
+            print('[{}] {}: {} {}'.format(players[server_turn], \
+                                          player_names[players[server_turn]], \
+                                          player_move.action.title(), \
+                                          (player_move.col + 1)))
 
-        print('[{}] {}: {} {}'.format(\
-            players[server_turn],\
-            player_names[players[server_turn]],\
-            player_move.action.title(),\
-            (player_move.col + 1)))
-        # Execute player moves locally
+        # Execute player moves
         try:
             game_state = utils.execute_move(game_state,player_move)
             winner = game.winner(game_state)
@@ -78,12 +76,12 @@ def main() -> None:
     #  the winner remotely and locally
     player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
     utils.print_board(game_state.board)
-    validate_winner(players[winner-1],player_move.winner,player_names)
+    _validate_winner(players[winner-1],player_move.winner,player_names)
 
     net_utils.end_game(connection)
 
 
-def validate_winner(local,server,names) -> None:
+def _validate_winner(local,server,names) -> None:
     ''' Ensures that the local and server winners are the same '''
     if local == server:
         print("[{}] {} WINS!!!".format(server, names[server]))
