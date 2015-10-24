@@ -11,6 +11,7 @@ ACTION_POP = 'POP'
 _BORDER_CHAR = u'\u25A0'
     
 def print_instructions() -> None:
+    ''' Print instructions '''
     print("Welcome to the best Connect Four game ever made!!!")
     print("Instructions:")
     print("  1. You can either drop your piece or pop your piece.")
@@ -18,6 +19,7 @@ def print_instructions() -> None:
     print("  3. Top pop, enter 'pop column#', i.e. 'pop 3'.")
     
 def print_board(game_board: [str]) -> None:
+    ''' Print board '''
     max_digit_len = len(str(connectfour.BOARD_COLUMNS))
 
     print()
@@ -34,6 +36,7 @@ def print_board(game_board: [str]) -> None:
         print("{}".format(temp).ljust(max_digit_len), end=' ')
     print()
 
+    # Loop through rows and columns to print the list of characters
     for i in range(connectfour.BOARD_ROWS):
         print("{}".format(_BORDER_CHAR).ljust(max_digit_len), end=' ')
         for j in range(connectfour.BOARD_COLUMNS + 1):
@@ -68,9 +71,10 @@ def get_input(cur_player: str, input_format = "Player {}'s turn:") -> ():
         if result != None:
             return result
         
-        print('Invalid move')
+        print("Invalid move")
 
 def validate_user_input(user_input: [str]) -> bool:
+    ''' Validates user input to determine if it's within required boundaries '''
     if len(user_input) == 2:
         action = user_input[0].upper()
         column = user_input[1]

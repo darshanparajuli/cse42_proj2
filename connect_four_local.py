@@ -3,6 +3,7 @@ import connect_four_utils as utils
 
 
 def run_game() -> None:
+    ''' Starts a local game '''
     utils.print_instructions()
     game_state = game.new_game()
     
@@ -13,6 +14,8 @@ def run_game() -> None:
     while True:
         utils.print_board(game_state.board)
         player_move = utils.get_input(players[i])
+        
+        # Select a player action 
         try:
             if player_move.action == utils.ACTION_POP:
                 game_state = game.pop(game_state, player_move.col)
@@ -22,6 +25,7 @@ def run_game() -> None:
             print("Invalid move")
             continue
 
+        # Swap players
         i = (i + 1) % 2
 
         winner = game.winner(game_state)
@@ -38,5 +42,4 @@ def run_game() -> None:
 
     
 if __name__ == "__main__":
-    #test()
     run_game()

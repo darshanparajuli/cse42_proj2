@@ -1,14 +1,11 @@
 import connect_four_network_utils as net_utils
 import connectfour as game
 import connect_four_utils as utils
-
-# TODO: remove these
-import random
-import time
-import calendar
+import random, time, calendar
 from collections import namedtuple
 
 def get_random_move() -> '(action, col, winner)':
+    ''' A test AI to play moves agains a remote server '''
     result = namedtuple('Result', ['action', 'col', 'winner'])
     result.col = random.randint(0, game.BOARD_COLUMNS - 1)
     if random.randint(0, 100) > 30:
@@ -20,20 +17,21 @@ def get_random_move() -> '(action, col, winner)':
     
 
 def main() -> None:
-    # while True:                 
-    #     connection = net_utils.connect_to_server()
-    #     if connection != None:
-    #         user = net_utils.get_username()
-    #         if net_utils.start_game(connection, user):                
-    #             break
-    #         else:
-    #             return
+    # Connect to server
+    while True:                 
+        connection = net_utils.connect_to_server()
+        if connection != None:
+            user = net_utils.get_username()
+            if net_utils.start_game(connection, user):                
+                break
+            else:
+                return
 
-    # TODO: remove these
-    connection = net_utils._open_connection("woodhouse.ics.uci.edu", 4444)
-    user = "batman"
-    net_utils.start_game(connection, user)
-    random.seed(calendar.timegm(time.gmtime()))
+    # Test connection
+    #connection = net_utils._open_connection("woodhouse.ics.uci.edu", 4444)
+    #user = "batman"
+    #net_utils.start_game(connection, user)
+    #random.seed(calendar.timegm(time.gmtime()))
     
 
     # Variable Initialization
@@ -52,7 +50,9 @@ def main() -> None:
 
         # Receive player moves and execute server side
         if not is_server:
-            player_move = get_random_move() #utils.get_input(players[i], input_format)
+            # Test bot code
+            #player_move = get_random_move()
+            player_move = utils.get_input(players[is_server], input_format)
         else:
             player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
 
@@ -82,18 +82,19 @@ def main() -> None:
     time.sleep(1)
 
 def execute_move(game_state,player_move) -> 'game_state':
+    ''' Performs a local move based on a player action '''
     if player_move.action == utils.ACTION_POP:
         return game.pop(game_state, player_move.col)
     elif player_move.action == utils.ACTION_DROP:
         return game.drop(game_state, player_move.col)
 
 def validate_winner(local,server,names) -> None:
+    ''' Ensures that the local and server winners are the same '''
     if local == server:
         print("[{}] {} WINS!!!".format(server, names[server]))
     else:
         print("Winner mismatch, someone cheated!")
     
 if __name__ == "__main__":
-    while True:
-        main()
+    main()
     
