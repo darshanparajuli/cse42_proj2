@@ -62,7 +62,7 @@ def print_board(game_board: [str]) -> None:
     print()
     
     
-def get_input(game_state:GameState ,cur_player: str, input_format = "Player {}'s turn:") -> ():
+def get_input(game_state: 'GameState' ,cur_player: str, input_format = "Player {}'s turn:") -> ():
     ''' Gets the user input '''
     while True:
         print(input_format.format(cur_player),end=' ')
