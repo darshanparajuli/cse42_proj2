@@ -22,7 +22,7 @@ def run_game() -> None:
             else:
                 game_state = game.drop(game_state, player_move.col)
         except game.InvalidMoveError:
-            print("Invalid move")
+            print("[Connect Four] : Invalid move")
             continue
 
         # Swap players

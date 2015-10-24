@@ -72,7 +72,7 @@ def get_input(game_state: 'GameState' ,cur_player: str, input_format = "Player {
         if result != None:
             return result
         
-        print("Invalid move")
+        print("[Connect Four] Invalid move")
         print_board(game_state.board)
 
 def validate_user_input(user_input: [str]) -> bool:

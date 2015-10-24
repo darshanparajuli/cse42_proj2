@@ -41,7 +41,7 @@ def get_username() -> str:
         print("Enter a username (no spaces):", end = ' ')
         username = input().split()
         if len(username) != 1:
-            print("Invalid username")
+            print("[Connect Four] Invalid username")
         else:
             return username[0]
         

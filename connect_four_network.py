@@ -67,7 +67,7 @@ def main() -> None:
             winner = game.winner(game_state)
 
         except game.InvalidMoveError:
-            print("Invalid move")
+            print("[Connect Four] Invalid move")
             continue
 
         is_server = not is_server
