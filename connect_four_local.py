@@ -13,7 +13,7 @@ def run_game() -> None:
     
     while True:
         utils.print_board(game_state.board)
-        player_move = utils.get_input(players[i])
+        player_move = utils.get_input(game_state,players[i])
         
         # Select a player action 
         try:

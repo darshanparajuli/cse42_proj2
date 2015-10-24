@@ -52,7 +52,7 @@ def main() -> None:
         if not is_server:
             # Test bot code
             #player_move = get_random_move()
-            player_move = utils.get_input(players[is_server], input_format)
+            player_move = utils.get_input(game_state,players[is_server], input_format)
         else:
             player_move = net_utils.sync_move(connection, player_move.action, player_move.col)
 

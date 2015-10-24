@@ -62,7 +62,7 @@ def print_board(game_board: [str]) -> None:
     print()
     
     
-def get_input(cur_player: str, input_format = "Player {}'s turn:") -> ():
+def get_input(game_state:GameState ,cur_player: str, input_format = "Player {}'s turn:") -> ():
     ''' Gets the user input '''
     while True:
         print(input_format.format(cur_player),end=' ')
@@ -71,6 +71,7 @@ def get_input(cur_player: str, input_format = "Player {}'s turn:") -> ():
         if result != None:
             return result
         
+        print_board(game_state.board)
         print("Invalid move")
 
 def validate_user_input(user_input: [str]) -> bool:
