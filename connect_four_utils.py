@@ -21,9 +21,9 @@ def print_instructions() -> None:
     
 def execute_move(game_state,player_move) -> 'game_state':
     ''' Performs a local move based on a player action '''
-    if player_move.action == utils.ACTION_POP:
+    if player_move.action == ACTION_POP:
         return game.pop(game_state, player_move.col)
-    elif player_move.action == utils.ACTION_DROP:
+    elif player_move.action == ACTION_DROP:
         return game.drop(game_state, player_move.col)
 
 def print_board(game_board: [str]) -> None:
