@@ -9,28 +9,23 @@ def run_game() -> None:
     
     winner = game.NONE
     players = ("RED", "YELLOW")
-    i = 0
+    yellow_turn =  False
     
-    while True:
+    while winner == game.NONE:
         utils.print_board(game_state.board)
-        player_move = utils.get_input(game_state,players[i])
+        player_move = utils.get_input(game_state,players[yellow_turn])
         
         # Select a player action 
         try:
-            if player_move.action == utils.ACTION_POP:
-                game_state = game.pop(game_state, player_move.col)
-            else:
-                game_state = game.drop(game_state, player_move.col)
+            utils.execute_move(game_state,player_move)
         except game.InvalidMoveError:
-            print("[Connect Four] : Invalid move")
+            print("[Connect Four] Invalid move")
             continue
 
         # Swap players
-        i = (i + 1) % 2
+        yellow_turn = not yellow_turn
 
         winner = game.winner(game_state)
-        if winner != game.NONE:
-            break
 
     winner_name = 'NONE'
     if winner == game.RED:

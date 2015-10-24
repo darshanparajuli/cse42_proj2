@@ -19,6 +19,13 @@ def print_instructions() -> None:
     print("  2. To drop, enter 'drop column#', i.e. 'drop 4'.")
     print("  3. Top pop, enter 'pop column#', i.e. 'pop 3'.")
     
+def execute_move(game_state,player_move) -> 'game_state':
+    ''' Performs a local move based on a player action '''
+    if player_move.action == utils.ACTION_POP:
+        return game.pop(game_state, player_move.col)
+    elif player_move.action == utils.ACTION_DROP:
+        return game.drop(game_state, player_move.col)
+
 def print_board(game_board: [str]) -> None:
     ''' Print board '''
     max_digit_len = len(str(connectfour.BOARD_COLUMNS))
