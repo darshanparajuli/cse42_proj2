@@ -12,6 +12,7 @@ _BORDER_CHAR = u'\u25A0'
     
 def print_instructions() -> None:
     ''' Print instructions '''
+    print()
     print("Welcome to the best Connect Four game ever made!!!")
     print("Instructions:")
     print("  1. You can either drop your piece or pop your piece.")
@@ -71,8 +72,8 @@ def get_input(game_state: 'GameState' ,cur_player: str, input_format = "Player {
         if result != None:
             return result
         
-        print_board(game_state.board)
         print("Invalid move")
+        print_board(game_state.board)
 
 def validate_user_input(user_input: [str]) -> bool:
     ''' Validates user input to determine if it's within required boundaries '''
