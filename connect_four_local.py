@@ -1,3 +1,8 @@
+# Anthony Lam 77341985
+# Darshan Parajuli 16602518
+# ICS 32 Fall 2015
+# Project 2
+
 import connectfour as game
 import connect_four_utils as utils
 
