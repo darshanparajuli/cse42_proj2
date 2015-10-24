@@ -91,7 +91,7 @@ def _validate_winner(local,server,names) -> None:
     if local == server:
         print("[{}] {} WINS!!!".format(server, names[server]))
     else:
-        print("Winner mismatch, someone cheated!")
+        print("[Connect Four] Winner mismatch, someone cheated!")
     
 if __name__ == "__main__":
     main()
