@@ -22,9 +22,9 @@ def print_instructions() -> None:
 def execute_move(game_state,player_move) -> 'game_state':
     ''' Performs a local move based on a player action '''
     if player_move.action == ACTION_POP:
-        return game.pop(game_state, player_move.col)
+        return connectfour.pop(game_state, player_move.col)
     elif player_move.action == ACTION_DROP:
-        return game.drop(game_state, player_move.col)
+        return connectfour.drop(game_state, player_move.col)
 
 def print_board(game_board: [str]) -> None:
     ''' Print board '''
@@ -70,7 +70,7 @@ def print_board(game_board: [str]) -> None:
     print()
     
     
-def get_input(game_state: 'GameState' ,cur_player: str, input_format = "Player {}'s turn:") -> ():
+def get_input(game_state: 'GameState' ,cur_player: str, input_format = "[Connect Four] {}:") -> ():
     ''' Gets the user input '''
     while True:
         print(input_format.format(cur_player),end=' ')

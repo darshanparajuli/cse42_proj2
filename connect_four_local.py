@@ -17,7 +17,7 @@ def run_game() -> None:
         
         # Select a player action 
         try:
-            utils.execute_move(game_state,player_move)
+            game_state = utils.execute_move(game_state,player_move)
         except game.InvalidMoveError:
             print("[Connect Four] Invalid move")
             continue
@@ -27,13 +27,15 @@ def run_game() -> None:
 
         winner = game.winner(game_state)
 
+    utils.print_board(game_state.board)
+
     winner_name = 'NONE'
     if winner == game.RED:
         winner_name = 'RED'
     elif winner == game.YELLOW:
         winner_name = 'YELLOW'
 
-    print('winner: {}'.format(winner_name))
+    print('[Connect Four] Winner: {}'.format(winner_name))
 
     
 if __name__ == "__main__":
