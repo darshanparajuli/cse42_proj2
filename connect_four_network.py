@@ -41,7 +41,7 @@ def main() -> None:
     is_server = False
     player_move = None
 
-    input_format = "[{{}}] {}: ".format(user)
+    input_format = "[{{}}] {}:".format(user)
     utils.print_instructions()
     game_state = game.new_game()
 
